@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.17.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="0.0.2-1" author="vangelis" dbms="postgresql, h2">
+        <createTable schemaName="public" tableName="account">
+            <column name="id" type="VARCHAR(255)" defaultValueComputed="uuid_generate_v4()">
+<!--            <column name="id" type="VARCHAR(255)">-->
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_account"/>
+            </column>
+            <column name="balance" type="FLOAT"/>
+            <column name="currency" type="VARCHAR(255)"/>
+            <column name="created_at" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="0.0.2-2" author="vangelis" dbms="postgresql, h2">
+        <createTable schemaName="public" tableName="transaction">
+            <column name="id" type="VARCHAR(255)" defaultValueComputed="uuid_generate_v4()">
+<!--            <column name="id" type="VARCHAR(255)">-->
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_transaction"/>
+            </column>
+            <column name="amount" type="FLOAT"/>
+            <column name="source_account_id" type="VARCHAR(255)"/>
+            <column name="target_account_id" type="VARCHAR(255)"/>
+            <column name="currency" type="VARCHAR(255)"/>
+            <column name="ordered_at" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="0.0.2-3" author="vangelis" dbms="postgresql, h2">
+        <addForeignKeyConstraint baseColumnNames="source_account_id" baseTableName="transaction"
+                                 baseTableSchemaName="public" constraintName="FK_TRANSACTION_ON_SOURCE_ACCOUNT"
+                                 referencedColumnNames="id" referencedTableName="account"
+                                 referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet id="0.0.2-4" author="vangelis" dbms="postgresql, h2">
+        <addForeignKeyConstraint baseColumnNames="target_account_id" baseTableName="transaction"
+                                 baseTableSchemaName="public" constraintName="FK_TRANSACTION_ON_TARGET_ACCOUNT"
+                                 referencedColumnNames="id" referencedTableName="account"
+                                 referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet id="0.0.2-5" author="vangelis" dbms="postgresql, h2">
+        <insert schemaName="public" tableName="account" >
+            <column name="id" value="KANE987"/>
+            <column name="balance" value="5069.5"/>
+            <column name="currency" value="EUR"/>
+            <column name="created_at" value="now()"/>
+        </insert>
+        <insert schemaName="public" tableName="account" >
+<!--            <column name="id" value="VERA153"/>-->
+            <column name="balance" value="36980.67"/>
+            <column name="currency" value="JPY"/>
+            <column name="created_at" value="now()"/>
+        </insert>
+        <insert schemaName="public" tableName="account" >
+<!--            <column name="id" value="ALVIN563"/>-->
+            <column name="balance" value="300.92"/>
+            <column name="currency" value="GBP"/>
+            <column name="created_at" value="now()"/>
+        </insert>
+        <insert schemaName="public" tableName="account" >
+            <column name="id" value="JAX042"/>
+            <column name="balance" value="986.67"/>
+            <column name="currency" value="USD"/>
+            <column name="created_at" value="now()"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

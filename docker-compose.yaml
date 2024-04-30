@@ -1,0 +1,29 @@
+version: '3.10'
+
+services:
+  bank-db:
+    image: postgres
+    container_name: bank-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=postgres
+    build:
+      context: src/main/resources/db/migrations
+    ports:
+      - "5432:5432"
+    networks:
+      - bank-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+networks:
+  bank-network:
+    driver: bridge
+
+

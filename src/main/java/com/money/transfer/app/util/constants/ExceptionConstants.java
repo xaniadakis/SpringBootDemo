@@ -11,5 +11,10 @@ public class ExceptionConstants {
     public static final String NEGATIVE_AMOUNT_EXCEPTION_MESSAGE = "Cannot transfer negative amount of %s.";
     public static final String NON_EXISTENT_ACCOUNT_EXCEPTION_MESSAGE = "Account with ID: %s is non existent.";
     public static final String SAME_ACCOUNT_EXCEPTION_MESSAGE = "Source and target account cannot be the same.";
-    public static final String WEB_CLIENT_EXCEPTION_MESSAGE = "Error while fetching exchange rates from API.";
+    public static final String WEB_CLIENT_GENERAL_EXCEPTION_MESSAGE = "Error while fetching exchange rates from API.";
+
+    public static final String EXTERNAL_SERVER_EXCEPTION_MESSAGE = "Failed to retrieve exchange rates due to external server error.";
+
+    public static final String INTERNAL_SERVER_EXCEPTION_MESSAGE = "Failed to send request to the exchange rate service.";
+    public static final String REQUEST_TIME_OUT_EXCEPTION_MESSAGE = "Request to the exchange rate service timed out.";
 }

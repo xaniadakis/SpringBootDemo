@@ -7,7 +7,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.time.Duration;
+import java.util.concurrent.TimeoutException;
+
+import static com.money.transfer.app.util.constants.ExceptionConstants.*;
 
 /**
  * Rest Client to integrate with the external exchange rate API.
@@ -23,11 +30,11 @@ public class ExchangeRateRestClient {
 
     /**
      * Fetches exchange rate data for a given base currency.
-     *
+     * <p>
      * This method constructs a URL for the exchange rate API using the provided base currency
      * and sends a GET request through the {@link WebClient}.
      *
-     * @param baseCurrency The base currency code (e.g., "USD") used to fetch corresponding exchange rates.
+     * @param baseCurrency The base currency code to fetch exchange rates in relation to.
      * @return {@link ExchangeRateResponse} containing exchange rate data
      * @throws WebClientException in case there is an error during the web client operation
      */
@@ -40,12 +47,19 @@ public class ExchangeRateRestClient {
                     .uri(url)
                     .retrieve()
                     .toEntity(ExchangeRateResponse.class)
-                    .block();
+                    .block(Duration.ofSeconds(10));
             log.debug("ExchangeRate API responded: {}", responseEntity.getStatusCode());
             return responseEntity.getBody();
+        } catch (WebClientResponseException e) {
+            throw new WebClientException(EXTERNAL_SERVER_EXCEPTION_MESSAGE);
+        } catch (WebClientRequestException e) {
+            throw new WebClientException(INTERNAL_SERVER_EXCEPTION_MESSAGE);
         } catch (Exception e) {
-            throw new WebClientException();
+            if (e.getCause() instanceof TimeoutException) {
+                throw new WebClientException(REQUEST_TIME_OUT_EXCEPTION_MESSAGE);
+            } else {
+                throw new WebClientException(WEB_CLIENT_GENERAL_EXCEPTION_MESSAGE);
+            }
         }
     }
-
 }

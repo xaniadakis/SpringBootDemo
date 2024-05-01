@@ -9,10 +9,7 @@ import spock.lang.Specification
 
 import java.time.LocalDateTime
 
-import static com.money.transfer.app.util.constants.ExceptionConstants.LOW_BALANCE_EXCEPTION_MESSAGE
-import static com.money.transfer.app.util.constants.ExceptionConstants.NEGATIVE_AMOUNT_EXCEPTION_MESSAGE
-import static com.money.transfer.app.util.constants.ExceptionConstants.NON_EXISTENT_ACCOUNT_EXCEPTION_MESSAGE
-import static com.money.transfer.app.util.constants.ExceptionConstants.SAME_ACCOUNT_EXCEPTION_MESSAGE
+import static com.money.transfer.app.util.constants.ExceptionConstants.*
 
 class GlobalExceptionHandlerSpec extends Specification {
 
@@ -41,7 +38,7 @@ class GlobalExceptionHandlerSpec extends Specification {
 
     def "handleWebClientException"() {
         given:
-        def exception = new WebClientException()
+        def exception = new WebClientException(WEB_CLIENT_GENERAL_EXCEPTION_MESSAGE)
 
         when:
         def response = globalExceptionHandler.handle(exception)

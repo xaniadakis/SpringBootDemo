@@ -1,79 +1,88 @@
-# RESTful API for Money Transfer
+# Money Transfer Application
 
-This project implements a simple RESTful API using Spring Boot (Java) for handling financial transactions. The main functionality is to transfer money between two bank accounts, adhering to the specified acceptance criteria.
+## Overview
 
-## Table of Contents
+The **Money Transfer Application** provides a platform for transferring money between accounts, 
+supporting multiple currencies and real-time currency conversion. 
+It is designed with extensive testing to ensure accurate and efficient operations.
 
-- [Features](#features)
-- [Endpoints](#endpoints)
-- [Data Models](#data-models)
-- [General Notes](#general-notes)
+## Key Features
+* **Money Transfer:** Transfer money between accounts with automatic currency conversion.
+* **Advanced Error Handling:** Custom exception handling for robust error management
+and reporting back to user.
+* **Multi-Database Compatibility:** Uses PostgreSQL for production and H2 for testing, ensuring reliability and ease of testing.
 
-## Features
+## Technologies
+* **Spring Boot**
+* **PostgreSQL & H2 Database:** PostgreSQL for production and H2 for testing.
+* **Liquibase:** Manages database schema changes efficiently.
+* **Docker:** Simplifies deployment.
+* **Groovy Testing:** For meaningful unit testing achieving 100% (branch & instruction) coverage and integration tests to help with the development and scaling.
+* **Lombok:** Minimizes boilerplate code.
+* **Aspect-Oriented Programming (AOP):** For centralized and efficient logging management.
 
-- Happy path for money transfer between two accounts.
-- Handling insufficient balance to process money transfer.
-- Preventing transfer between the same account.
-- Validating the existence of accounts during the transaction.
-- Simple and extensible data models for accounts and transactions.
+## Project Structure
 
-## Endpoints
-
-### 1. Money Transfer
-
-- **Endpoint**: `POST /api/transfer`
-- **Request Body**:
-  ```json
-  {
-    "sourceAccountId": "string",
-    "targetAccountId": "string",
-    "amount": 10.5,
-    "currency": "GBP"
-  }
-  ```
-- **Response**:
-    - Success:
-      ```json
-      {
-        "feelFree": "to decide the response type"
-      }
-      ```
-    - Failure:
-      ```json
-      {
-        "feelFree": "to decide the response type"
-      }
-      ```
-
-## Data Models
-
-### 1. Account
-
-```json
-{
-  "id": "string",
-  "balance": 100.0,
-  "currency": "GBP",
-  "createdAt": "2024-01-15T12:00:00Z",
-  "addOther": "optionalFieldsIfNecessary"
-}
+```
+com.money.transfer.app
+│
+├── annotation - Contains AOP logic for cross-cutting concerns like logging.
+├── configuration - Contains configuration of beans.
+├── controller.v1 - REST controller that provides an HTTP endpoint to transfer money.
+├── dto - Data Transfer Objects that encapsulate request and response data.
+├── entity - Domain models representing database tables.
+├── exception - Custom exception handling classes that manage specific error scenarios and a global exception handler.
+├── integration - A web client responsible for integrating with an external API.
+├── repository - Spring Data JPA repositories for handling CRUD operations on database entities.
+├── service - Services that contain the core business logic of the application.
+└── utils - Utility class and constants.
 ```
 
-### 2. Transaction
+## Testing
 
-```json
-{
-  "id": "string",
-  "sourceAccountId": "string",
-  "targetAccountId": "string",
-  "amount": 10.5,
-  "currency": "GBP",
-  "addOther": "optionalFieldsIfNecessary"
-}
-```
+### Groovy Integration Tests
 
-## General Notes
+The [MoneyTransferControllerImplIS](src/test/groovy/com/money/transfer/app/controller/v1/MoneyTransferControllerImplIS.groovy)
+simulates application behaviour against real Postman requests. It integrates with an H2 database, 
+used solely for testing purposes. 
 
-- Mock external services and databases if needed.
-- Choose between Maven or Gradle for dependency management.
-- The API is assumed to be public; no security measures are required for this assignment.
+###### _It is standalone. No need to start the production db with the docker-compose._
+
+Also the [ExchangeRateRestClientIS](src/test/groovy/com/money/transfer/app/integration/ExchangeRateRestClientIS.groovy)
+validates integration with [external currency rate services](https://app.exchangerate-api.com/).
+
+### Groovy Unit Tests
+
+There are multiple unit tests, but the more meaningful ones business-wise are the following:
+* The [MoneyTransferServiceSpec](src/test/groovy/com/money/transfer/app/service/MoneyTransferServiceImplSpec.groovy) which tests the core
+bussiness logic of the application, by mocking all the injected components and focusing on the specific service,
+* and the [GlobalExceptionHandlerSpec](src/test/groovy/com/money/transfer/app/exception/GlobalExceptionHandlerSpec.groovy)
+which sets a standard on how the application handles all exceptions thrown by any controller.
+
+* Also you can run `mvn clean test` and then open the [jacoco.html](target/site/jacoco/index.html) on the browser to assess
+the application's unit test coverage.
+
+### Postman Requests
+
+In this case you will first need to start the db with:
+
+`docker compose up`,
+
+then run the application **using your IDE preferably** or by:
+
+`mvn clean install`
+
+`mvn spring-boot:run`
+
+There are two accounts with standard names for testing purposes: **KANE987** and **JAX042**, so that one can begin testing, without
+manually interfering with the dB, to add test accounts or retrieve uuids.
+
+
+## Author
+### Evangelos Chaniadakis
+
+Contact: echaniadakis@gmail.com
+
+GitHub: [xaniadakis](https://github.com/xaniadakis)
+
+LinkedIn: [Evangelos Chaniadakis](https://www.linkedin.com/in/evangelos-chaniadakis/)
